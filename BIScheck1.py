@@ -15,6 +15,7 @@ lb = "*&"*50
 	# create_list_of_all_jobs(open_jobs_filings_page)
 	# get_info_from_job_links(list_of_links)
 
+"jimmyhat"
 
 list_of_bins=["1040908"]
 
@@ -116,15 +117,33 @@ def list_all_job_urls(bin):
 # print list_all_job_urls(testbin)
 
 def get_job_info(bin):
-	job_dict = {}
 	links_dict = list_all_job_urls(bin)
+	jobinfolist = []
+	jobnumlist = []
 	for link in links_dict[bin]:
 		# print link
 		to_parse = open_page(link)
 		soup = BeautifulSoup(to_parse)
-		elem = soup.find_all(class_="content")
-		print elem
-		# jobnum = soup.get_text()
+		# elem = soup.find_all(class_="maininfo")
+
+		for stringcontent in soup.findAll('td'):
+			jobinfolist.append(stringcontent.string)
+			# print stringcontent.string
+
+		for test in jobinfolist:
+			if "Job No:" in str(test):
+				# jobnumlist.append(test)
+				print test
+		# if "Cost" in str(test):
+		# 	jobnumlist.append(test)
+	# return jobnumlist		
+	
+	# return jobinfolist
+		# for specifics in elem:
+
+		# # elem = soup.find_all('td')
+		# 	print specifics
+		# # jobnum = soup.get_text()
 		# print jobnum
 
 		# print 'deeznuts'
