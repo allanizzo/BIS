@@ -14,7 +14,8 @@ lb = "*&"*50
 	# open_jobs_filings_page(bin)
 	# create_list_of_all_jobs(open_jobs_filings_page)
 	# get_info_from_job_links(list_of_links)
-
+	
+"jimmyhat"
 
 list_of_bins=["1040908"]
 
