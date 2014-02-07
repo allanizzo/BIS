@@ -2,7 +2,9 @@ import mechanize
 import datetime
 import urllib2
 from bs4 import BeautifulSoup
+from bs4 import NavigableString
 import urllib
+import re
 
 lb = "*&"*50
 
@@ -24,11 +26,11 @@ url_dict = {}
 # testbin = "1040908" # 706 MADISON
 					  # has 2 jobs/filings pages 45 total
 
-testbin = "1041072" # 11 E. 64tth STREET
+# testbin = "1041072" # 11 E. 64tth STREET
 					  # has only one page of jobs/filings
 					  # 5 total jobs/filings
 
-# testbin = "1015862"  # EMPIRE STATE BLDG - MAD FILINGS
+testbin = "1015862"  # EMPIRE STATE BLDG - MAD FILINGS
 					   #  2222 filings as of 1.4.14
  
 
@@ -73,8 +75,8 @@ def get_jobsfilings_links(url, list):
 def list_all_job_urls(bin):
 	bin_jobs_dict = {}
 	url = url_maker(bin)
-	jobs_url = "http://a810-bisweb.nyc.gov/bisweb/"
-	jobslist = []		
+	jobslist = []
+	jobs_url = "http://a810-bisweb.nyc.gov/bisweb/"	
 	# if search_forms(url) == True:
 	while search_forms(url) == True:
 		br = mechanize.Browser()
@@ -85,7 +87,7 @@ def list_all_job_urls(bin):
 		response = br.submit()
 		# newpage = response.read()
 		new_url = response.geturl()
-		print 'deeznuts'
+		# print 'deeznuts'
 		url = new_url	
 
 		# print 'deeznuts'
@@ -116,37 +118,42 @@ def list_all_job_urls(bin):
 
 # print list_all_job_urls(testbin)
 
+from bs4 import NavigableString
+def surrounded_by_strings(tag):
+    return (isinstance(tag.next_element, NavigableString)
+            and isinstance(tag.previous_element, NavigableString))
+
 def get_job_info(bin):
 	links_dict = list_all_job_urls(bin)
 	jobinfolist = []
 	jobnumlist = []
+	job_dict = {}
 	for link in links_dict[bin]:
 		# print link
 		to_parse = open_page(link)
 		soup = BeautifulSoup(to_parse)
-		# elem = soup.find_all(class_="maininfo")
+		for tag in soup.find_all(text=re.compile("Job No:")):
+			jobnumlist.append([tag])
+	return jobnumlist		
 
-		for stringcontent in soup.findAll('td'):
-			jobinfolist.append(stringcontent.string)
-			# print stringcontent.string
-
-		for test in jobinfolist:
-			if "Job No:" in str(test):
-				# jobnumlist.append(test)
-				print test
-		# if "Cost" in str(test):
-		# 	jobnumlist.append(test)
-	# return jobnumlist		
-	
 	# return jobinfolist
-		# for specifics in elem:
+		# for string in soup.stripped_strings:
+		# 	print string
 
-		# # elem = soup.find_all('td')
-		# 	print specifics
-		# # jobnum = soup.get_text()
-		# print jobnum
 
-		# print 'deeznuts'
+
+
+
+
+		# text = soup.get_text()
+		# print text
+
+		# for stringcontent in soup.findAll('td'):
+
+			# print stringcontent.string
+			# jobinfolist.append(stringcontent.encode('utf-8'))
+			# print stringcontent
+		# print jobinfolist	
 
 print get_job_info(testbin)		
 
