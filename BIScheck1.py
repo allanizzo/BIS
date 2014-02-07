@@ -2,7 +2,9 @@ import mechanize
 import datetime
 import urllib2
 from bs4 import BeautifulSoup
+from bs4 import NavigableString
 import urllib
+import re
 
 lb = "*&"*50
 
@@ -14,7 +16,7 @@ lb = "*&"*50
 	# open_jobs_filings_page(bin)
 	# create_list_of_all_jobs(open_jobs_filings_page)
 	# get_info_from_job_links(list_of_links)
-	
+
 "jimmyhat"
 
 list_of_bins=["1040908"]
@@ -73,8 +75,8 @@ def get_jobsfilings_links(url, list):
 def list_all_job_urls(bin):
 	bin_jobs_dict = {}
 	url = url_maker(bin)
-	jobs_url = "http://a810-bisweb.nyc.gov/bisweb/"
-	jobslist = []		
+	jobslist = []
+	jobs_url = "http://a810-bisweb.nyc.gov/bisweb/"	
 	# if search_forms(url) == True:
 	while search_forms(url) == True:
 		br = mechanize.Browser()
@@ -85,7 +87,7 @@ def list_all_job_urls(bin):
 		response = br.submit()
 		# newpage = response.read()
 		new_url = response.geturl()
-		print 'deeznuts'
+		# print 'deeznuts'
 		url = new_url	
 
 		# print 'deeznuts'
@@ -116,19 +118,57 @@ def list_all_job_urls(bin):
 
 # print list_all_job_urls(testbin)
 
+# def surrounded_by_strings(tag):
+#     return (isinstance(tag.next_element, NavigableString)
+#             and isinstance(tag.previous_element, NavigableString))
+
 def get_job_info(bin):
-	job_dict = {}
 	links_dict = list_all_job_urls(bin)
+	jobnumlist = []
+	job_dict = {}
 	for link in links_dict[bin]:
 		# print link
+		minilist = []
 		to_parse = open_page(link)
 		soup = BeautifulSoup(to_parse)
-		elem = soup.find_all(class_="content")
-		print elem
-		# jobnum = soup.get_text()
-		# print jobnum
+		for tag in soup.find_all('td'):
+			if tag.find(text=re.compile("Job No:")):
+				minilist.append(tag.string)
+			if tag.find(text=re.compile("Estimated")):	
+				minilist.append(tag.string)
+				minilist.append(tag.find_next('td').string)
+				jobnumlist.append(minilist)	
+			# print tag
+			# soup.find_(text=re.compile("Job No:")))
 
-		# print 'deeznuts'
+		# for tag in soup.find_all(text=re.compile("Job No:")):
+		# 	print tag
+			# jobnumlist.append([tag])
+			# c.append(soup.find_next('td'))
+			# for est in soup.find_all(text=re.compile("Estimated")):
+			# 	jobcostlist.append(est)
+			# 	jobcostlist.append(soup.find_next('td'))
+	
+	return jobnumlist
+
+	# return jobinfolist
+		# for string in soup.stripped_strings:
+		# 	print string
+
+
+
+
+
+
+		# text = soup.get_text()
+		# print text
+
+		# for stringcontent in soup.findAll('td'):
+
+			# print stringcontent.string
+			# jobinfolist.append(stringcontent.encode('utf-8'))
+			# print stringcontent
+		# print jobinfolist	
 
 print get_job_info(testbin)		
 
