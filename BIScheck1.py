@@ -148,8 +148,9 @@ def get_job_info(bin):
 	
 	return jobnumlist
 
-def output_to_excel(bin):
-	jobinfo = get_job_info(bin)
+# def output_to_excel(bin, filename, sheet, ):
+# 	jobinfo = get_job_info(bin)
+
 
 
 
