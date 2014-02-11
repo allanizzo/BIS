@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from bs4 import NavigableString
 import urllib
 import re
+import xlwt	
 
 lb = "*&"*50
 
@@ -23,10 +24,10 @@ list_of_bins=["1040908"]
 
 url_dict = {}
 
-# testbin = "1040908" # 706 MADISON
+testbin = "1040908" # 706 MADISON
 					  # has 2 jobs/filings pages 45 total
 
-testbin = "1041072" # 11 E. 64tth STREET
+# testbin = "1041072" # 11 E. 64tth STREET
 					  # has only one page of jobs/filings
 					  # 5 total jobs/filings
 
@@ -90,7 +91,7 @@ def list_all_job_urls(bin):
 		# print 'deeznuts'
 		url = new_url	
 
-		# print 'deeznuts'
+		print 'deeznuts'
 
 	if search_forms(url) == False:
 		bin_jobs_dict[bin] = get_jobsfilings_links(url, jobslist)
@@ -140,15 +141,15 @@ def get_job_info(bin):
 				minilist.append(tag.string)
 				# now need to get the estimated cost string from tag
 				minilist.append(tag.find_next('td').string)
-				jobnumlist.append(minilist)	
+				jobnumlist.append(minilist)			
 			# print tag
-			# soup.find_(text=re.compile("Job No:")))
+# FOR EXCEL, NEED TO DECIDE IF WANT TO INCLUDE HERE OR
+# AS NEW FUNCTION 
 	
 	return jobnumlist
 
-	# return jobinfolist
-		# for string in soup.stripped_strings:
-		# 	print string
+def output_to_excel(bin):
+	jobinfo = get_job_info(bin)
 
 
 
