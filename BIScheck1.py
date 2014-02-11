@@ -125,7 +125,6 @@ def list_all_job_urls(bin):
 def get_job_info(bin):
 	links_dict = list_all_job_urls(bin)
 	jobnumlist = []
-	job_dict = {}
 	for link in links_dict[bin]:
 		# print link
 		minilist = []
@@ -134,20 +133,16 @@ def get_job_info(bin):
 		for tag in soup.find_all('td'):
 			if tag.find(text=re.compile("Job No:")):
 				minilist.append(tag.string)
+
+			if tag.find(text=re.compile("Job Type:")):
+				minilist.append(tag.string)	
 			if tag.find(text=re.compile("Estimated")):	
 				minilist.append(tag.string)
+				# now need to get the estimated cost string from tag
 				minilist.append(tag.find_next('td').string)
 				jobnumlist.append(minilist)	
 			# print tag
 			# soup.find_(text=re.compile("Job No:")))
-
-		# for tag in soup.find_all(text=re.compile("Job No:")):
-		# 	print tag
-			# jobnumlist.append([tag])
-			# c.append(soup.find_next('td'))
-			# for est in soup.find_all(text=re.compile("Estimated")):
-			# 	jobcostlist.append(est)
-			# 	jobcostlist.append(soup.find_next('td'))
 	
 	return jobnumlist
 
