@@ -108,10 +108,13 @@ def list_all_job_urls(bin):
 	# for BeautifulSoup to follow
 
 	urllist = []
-
+	# i = 0
 	for link in bin_jobs_dict[bin]:
+		# print link
+		# i+=1
 		link = jobs_url + link
 		urllist.append(link)
+	# print i	
 
 	url_dict[bin]= urllist
 		
@@ -125,49 +128,86 @@ def list_all_job_urls(bin):
 
 def get_job_info(bin):
 	links_dict = list_all_job_urls(bin)
-	jobnumlist = []
+	binlist = []
 	for link in links_dict[bin]:
 		# print link
 		minilist = []
 		to_parse = open_page(link)
 		soup = BeautifulSoup(to_parse)
 		for tag in soup.find_all('td'):
+			# print tag
 			if tag.find(text=re.compile("Job No:")):
 				minilist.append(tag.string)
-
+			if tag.find(text=re.compile("Document:")):
+				minilist.append(tag.string)
+			#	getting duplicates here	
 			if tag.find(text=re.compile("Job Type:")):
 				minilist.append(tag.string)	
-			if tag.find(text=re.compile("Estimated")):	
-				minilist.append(tag.string)
+			if tag.find(text=re.compile("Estimated Total")):	
+				# minilist.append(tag.string)
+				# build = tag.string
 				# now need to get the estimated cost string from tag
 				minilist.append(tag.find_next('td').string)
-				jobnumlist.append(minilist)			
+				# build = build + (tag.find_next('td').string)
+				# print build
+				# minilist.append(build)
+				binlist.append(minilist)
 			# print tag
 # FOR EXCEL, NEED TO DECIDE IF WANT TO INCLUDE HERE OR
 # AS NEW FUNCTION 
 	
-	return jobnumlist
 
-# def output_to_excel(bin, filename, sheet, ):
-# 	jobinfo = get_job_info(bin)
+	# binlist.append(jobnumlist)
+	return binlist
 
-
-
+# print get_job_info(testbin)	
 
 
+def output_to_excel(bin):
+	jobinfo = get_job_info(bin)
+	# print jobinfo
+	wb = xlwt.Workbook()
+	ws = wb.add_sheet(str(bin))
+	# col0_name = "Sheet num"
+	col1_name = 'Job #'
+	col2_name = 'Document #'
+	col3_name = 'Job Type'
+	col4_name = 'Est Cost'
+
+	rowcount = 0
+
+	ws.write(0,0, col1_name)
+	ws.write(0,1, col2_name)
+	ws.write(0,2, col3_name)
+	ws.write(0,3, col4_name)
+	# ws.write(0,3, col4_name)
+
+	rowcount += 1
+
+	for d in jobinfo:
+		print d
+		colcount = 0
+		rowcount += 1
+		for e in d:
+			print e
+			ws.write(rowcount, colcount, e)
+			# print colcount
+			colcount +=1
+			# print e
 
 
-		# text = soup.get_text()
-		# print text
+	# ws.write(rowcount,0, 'steazmonkey')
 
-		# for stringcontent in soup.findAll('td'):
+	wb.save('jimmyhat.xls')
 
-			# print stringcontent.string
-			# jobinfolist.append(stringcontent.encode('utf-8'))
-			# print stringcontent
-		# print jobinfolist	
+print output_to_excel(testbin)	
 
-print get_job_info(testbin)		
+
+
+
+
+
+	
 
 # we want the job_dict have a job# and estimated cost (content)
 
