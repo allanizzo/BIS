@@ -20,7 +20,7 @@ lb = "*&"*50
 
 "jimmyhat"
 
-list_of_bins=["1040908"]
+list_of_bins=["1041072", "1040908"]
 
 url_dict = {}
 
@@ -153,9 +153,6 @@ def get_job_info(bin):
 				# minilist.append(build)
 				binlist.append(minilist)
 			# print tag
-# FOR EXCEL, NEED TO DECIDE IF WANT TO INCLUDE HERE OR
-# AS NEW FUNCTION 
-	
 
 	# binlist.append(jobnumlist)
 	return binlist
@@ -169,6 +166,7 @@ def output_to_excel(bin):
 	wb = xlwt.Workbook()
 	ws = wb.add_sheet(str(bin))
 	# col0_name = "Sheet num"
+	bin_col = "Bin #"
 	col1_name = 'Job #'
 	col2_name = 'Document #'
 	col3_name = 'Job Type'
@@ -176,161 +174,44 @@ def output_to_excel(bin):
 
 	rowcount = 0
 
-	ws.write(0,0, col1_name)
-	ws.write(0,1, col2_name)
-	ws.write(0,2, col3_name)
-	ws.write(0,3, col4_name)
+	ws.write(rowcount,0, bin_col)
+	ws.write(rowcount,1, str(bin))
+
+	rowcount += 2
+
+	ws.write(rowcount,0, col1_name)
+	ws.write(rowcount,1, col2_name)
+	ws.write(rowcount,2, col3_name)
+	ws.write(rowcount,3, col4_name)
 	# ws.write(0,3, col4_name)
 
 	rowcount += 1
 
 	for d in jobinfo:
-		print d
+		# print d
 		colcount = 0
 		rowcount += 1
 		for e in d:
-			print e
+			# print e
 			ws.write(rowcount, colcount, e)
 			# print colcount
 			colcount +=1
 			# print e
-
-
 	# ws.write(rowcount,0, 'steazmonkey')
 
-	wb.save('jimmyhat.xls')
+	wb.save(str(bin)+".xls")
 
-print output_to_excel(testbin)	
+	# CAN EITHER GENERATE NEW .xls FILES OR 
+	# NEW SHEETS WITHIN A FILE - WHATEVER WORKS
 
-
-
-
-
-
-	
-
-# we want the job_dict have a job# and estimated cost (content)
-
-
-	# have list of urls
-	# need to open page, scrape it
-	# and modify a dictionary to include the 
-	# right info and tag
+# print output_to_excel(testbin)	
 
 
 
-	# want data structure to have job# as 
+def agg_data(list_of_bins):
+	for j in list_of_bins:
+		output_to_excel(j)
+
+print agg_data(list_of_bins)		
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# def open_page_from_url(link2):
-# 	page = urllib2.Request(link2)
-# 	response = urllib2.urlopen(page)
-# 	jobspage = response.read()
-# 	return jobspage
-
-
-# def return_bis_bin_content(url, bin):
-
-# 	#url = "http://a810-bisweb.nyc.gov/bisweb/bispi00.jsp"
-# 	br = mechanize.Browser()
-# 	br.set_handle_robots(False)
-# 	br.open(url)
-# 	br.select_form(nr=2)	
-# 	br["bin"] = bin
-# 	res = br.submit()
-# 	content = res.read()
-# 	return content
-
-# # 	with open('mechanize_results.html', 'w') as f:
-# # 		f.write(content)
-
-# # with is a safe way to open a file (file.open works) but 
-# # the with function closes the file when the block is closed
-# # always use with open() in python
-
-# def get_to_jobsfilings_link2(page_content):
-# 	soup = BeautifulSoup(page_content)
-# 	targetlink = []
-# 	i = 0
-# 	for link in soup.find_all('a'):
-# 		if "JobsQueryBy" in link.get("href"):
-# 	 	 	targetlink.append(link)
-# 	actual_link_i_need = targetlink[2] 
-# 	#this code will break like a motherfucker,
-# 	# need to find a better way to select the right link 	
-# 	return actual_link_i_need
-
-# link_to_filings = get_to_jobsfilings_link2(return_bis_bin_content(url, bin))
-# real_link = janky_gov_link_cleaner(link_to_filings)
-
-# #print real_link
-
-# def open_page_from_url(link2):
-# 	page = urllib2.Request(link2)
-# 	response = urllib2.urlopen(page)
-# 	jobspage = response.read()
-# 	return jobspage
-
-# def click_next(page):
-# 	br = mechanize.Browser()
-# 	br.set_handle_robots(False)
-# 	br.open(page)
-# 	br.select_form(name="frmnext")
-# 	response = br.submit()
-# 	return response.read()
-
-# #gotem
-
-# print lb	
-
-# #print open_jobs_filings_page(real_link)
-
-# #jobspage is html content
-
-# def print_all_jobs_links(jobspage):
-# 	soup = BeautifulSoup(jobspage)
-# 	targetlinks = []
-# 	i = 0
-# 	for link in soup.find_all('a'):
-# 		if "JobsQueryByNumber" in link.get("href"):
-# 			i += 1
-# 			targetlinks.append(janky_gov_link_cleaner(link))
-# 	print lb
-# 	print i
-# 	return targetlinks
-
-# def collect_all_links_from_all_pages(seed_job_page):
-# 	try:
-# 		click_next(seed_job_page)
-# 	except:
-# 		print "deeznuts"	
-
-	
-# #print print_all_jobs_links(open_page_from_url(real_link))		
-
-
-			
-# 	# for control in br.form.controls:
-# 	# 	#print "Control Name:", control.name
-# 	# 	print control
-# 	#   this obvously lists the controls out
-
-# 	# print content
-
-# print collect_all_links_from_all_pages("http://a810-bisweb.nyc.gov/bisweb/JobsQueryByLocationServlet?previous.x=34&previous.y=16&allbin=1040908&allcount=0001&allboroughname=&allstrt=&allnumbhous=&jobsubmdate_month=&jobsubmdate_date=&jobsubmdate_year=&allinquirytype=BXS1PRA3&alljobtype=&passdocnumber=&stcodekey=&ckbunique=&glreccountn=0000000045&requestid=3")
-# # print collect_all_links_from_all_pages("http://a810-bisweb.nyc.gov/bisweb/JobsQueryByLocationServlet?requestid=1&allbin=1041072&allstrt=EAST%20%20%2064%20STREET&allnumbhous=11")
